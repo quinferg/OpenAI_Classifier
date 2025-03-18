@@ -66,7 +66,6 @@ def process_user_message(message):
             response_format=UttClassification,
         )
         classification = response.choices[0].message.parsed.model_dump()
-        print(f"OpenAI reponse: {classification}")
         return {"intent": classification.get("intent", "unknown"), "id": classification.get("id", "unknown")}
     except Exception as e:
         print(f"Exception: {e}")  # Print the actual error
@@ -92,7 +91,7 @@ def bad_request_error(error):
 @app.route('/conversations', methods=['POST'])
 def start_conversation():
     conversation_id = str(uuid.uuid4())
-    conversations[conversation_id] = conversation_start.copy()
+    conversations[conversation_id] = [conversation_start.copy()]
     return jsonify({"agent_utterance": conversation_start["agent_utterance"], "conversation_id": conversation_id}), 201
 
 @app.route('/conversations/<conversation_id>/messages', methods=['GET'])
@@ -103,7 +102,6 @@ def get_messages(conversation_id):
 
 @app.route('/conversations/<conversation_id>/messages', methods=['POST'])
 def add_message(conversation_id):
-    print("Add message route hit")  # <-- This is to check if the route is being called.
     if conversation_id not in conversations:
         return jsonify({"error": "Conversation not found"}), 404
     
@@ -113,7 +111,11 @@ def add_message(conversation_id):
     
     # Get user message
     user_message = data.get("message")
-    conversations[conversation_id]["user_response"] = user_message
+    conversation = conversations[conversation_id]
+    for turn in conversation:
+        if turn["turn"] == len(conversation):
+            turn["user_response"] = user_message
+
 
     # Get response from OpenAI model
     agent_response = process_user_message(user_message)
@@ -130,13 +132,13 @@ def add_message(conversation_id):
 
     # Update conversation with new turn
     new_turn = {
-        "turn": conversations[conversation_id]["turn"] + 1,
+        "turn": len(conversation) + 1,
         "agent_utterance": agent_reply,
         "user_response": "",
         "role": "assistant"
     }
-    conversations[conversation_id] = new_turn
-
+    conversations[conversation_id].append(new_turn)
+    print(f"Conversational length is {len(conversation)}")
     return jsonify({"agent_utterance": agent_reply, "id": conversation_id}), 201
 
 if __name__ == '__main__':
