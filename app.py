@@ -138,7 +138,6 @@ def add_message(conversation_id):
         "role": "assistant"
     }
     conversations[conversation_id].append(new_turn)
-    print(f"Conversational length is {len(conversation)}")
     return jsonify({"agent_utterance": agent_reply, "id": conversation_id}), 201
 
 if __name__ == '__main__':
