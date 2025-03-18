@@ -34,6 +34,9 @@ This creates a session ID that you can then continue the conversation, by using 
 Invoke-WebRequest -Uri http://localhost:5000/conversations/{uuid}/messages -Method Post -Body '{"message": "I want to cancel my order 12345"}' -ContentType "application/json"
 
 
+![Screenshot 2025-03-18 090707](https://github.com/user-attachments/assets/3d96f03c-2fa3-4025-98a3-afb977ee11f8)
+
+
 
 
 
