@@ -1,0 +1,7 @@
+flask
+uuid
+jsonify
+openai
+pandas
+pydantic
+dotenv
