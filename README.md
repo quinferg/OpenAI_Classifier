@@ -9,7 +9,10 @@ Pre-requisite keys:
 	
 OpenAI API key
 
-Once you have the OpenAI key, replace the placeholder in a .env file with your key at OPENAI_API_KEY in the project folder
+Place the key in a .env file with your key at OPENAI_API_KEY in the project folder
+
+E.X.
+OPENAI_API_KEY=$key
 
 
 Download all project files, and run:
